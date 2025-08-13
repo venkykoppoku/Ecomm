@@ -11,6 +11,8 @@ const port = process.env.PORT || 3000;
 //database connection
 connectDatabase();
 
+app.use(express.json());
+
 //import all routes
 app.use("/api/v1", productRoutes);
 
