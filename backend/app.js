@@ -4,6 +4,12 @@ import { connectDatabase } from "./config/dbConnect.js";
 import productRoutes from "./routes/product.js";
 import errorMiddleware from "./middlewares/error.js";
 
+//handle uncaught exceptions
+process.on("uncaughtException", (err) => {
+  console.log(`Error ${err}`);
+  console.log(`Shutting down server due to unhandled promise rejection error`);
+  process.exit(1);
+});
 const app = express();
 
 env.config({ path: "backend/config/config.env" });
@@ -20,8 +26,17 @@ app.use("/api/v1", productRoutes);
 //custom error handler middleware
 app.use(errorMiddleware);
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(
     `Server listening on port ${port} in ${process.env.NODE_ENV} environment`
   );
+});
+
+// handle unhandled promise rejection error
+process.on("unhandledRejection", (err) => {
+  console.log(`Error ${err}`);
+  console.log(`Shutting down server due to unhandled promise rejection error`);
+  server.close(() => {
+    process.exit(1);
+  });
 });
