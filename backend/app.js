@@ -2,6 +2,7 @@ import express from "express";
 import env from "dotenv";
 import { connectDatabase } from "./config/dbConnect.js";
 import productRoutes from "./routes/product.js";
+import errorMiddleware from "./middlewares/error.js";
 
 const app = express();
 
@@ -15,6 +16,9 @@ app.use(express.json());
 
 //import all routes
 app.use("/api/v1", productRoutes);
+
+//custom error handler middleware
+app.use(errorMiddleware);
 
 app.listen(port, () => {
   console.log(

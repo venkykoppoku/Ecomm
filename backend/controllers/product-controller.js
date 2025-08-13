@@ -1,4 +1,5 @@
 import Product from "../models/product.js";
+import ErrorHandler from "../utils/errorHandler.js";
 
 // get all products /api/v1/products
 export const getAllProducts = async (req, res) => {
@@ -8,19 +9,22 @@ export const getAllProducts = async (req, res) => {
 
 // create the product /api/v1/admin/products
 export const createProduct = async (req, res) => {
-  console.log();
   const product = await Product.create(req.body.product);
   return res.status(200).json({ product });
 };
 
 // get product by product id /api/v1/products/:id
-export const getProductById = async (req, res) => {
+export const getProductById = async (req, res, next) => {
   const product = await Product.findById(req?.params?.id);
 
   if (!product) {
-    return res
-      .status(404)
-      .json({ message: `product not found with id ${req?.params?.id}` });
+    // return res
+    //   .status(404)
+    //   .json({ message: `product not found with id ${req?.params?.id}` });
+
+    return next(
+      new ErrorHandler(`product not found with id ${req?.params?.id}`, 404)
+    );
   }
 
   return res.status(200).json({ product });
