@@ -1,5 +1,6 @@
 import express from "express";
 import env from "dotenv";
+import cookieParser from "cookie-parser";
 import { connectDatabase } from "./config/dbConnect.js";
 import productRoutes from "./routes/product.js";
 import authRoutes from "./routes/auth.js";
@@ -20,6 +21,7 @@ const port = process.env.PORT || 3000;
 connectDatabase();
 
 app.use(express.json());
+app.use(cookieParser());
 
 //import all routes
 app.use("/api/v1", productRoutes);
