@@ -9,7 +9,7 @@ export const registerUser = catchAsync(async (req, res) => {
   sendToken(user, 201, res);
 });
 
-//login user
+//login user /api/v1/login
 export const loginUser = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
@@ -25,4 +25,15 @@ export const loginUser = catchAsync(async (req, res, next) => {
   }
 
   sendToken(user, 201, res);
+});
+
+//logout user /api/v1/logout
+export const logOutUser = catchAsync(async (req, res, next) => {
+  res.cookie("token", null, {
+    expires: new Date(Date.now()),
+  });
+
+  res.status(200).json({
+    message: "Logged out",
+  });
 });
