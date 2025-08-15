@@ -4,8 +4,47 @@ import ErrorHandler from "../utils/errorHandler.js";
 
 // get all products /api/v1/products
 export const getAllProducts = catchAsync(async (req, res) => {
-  const products = await Product.find();
-  return res.status(200).json({ products });
+  const {
+    search = "",
+    category = "",
+    minPrice = 0,
+    maxPrice = Number.MAX_SAFE_INTEGER,
+    pageSize = 4,
+    pageIndex = 1,
+  } = req.query;
+
+  const min = Math.max(0, parseFloat(minPrice) || 0);
+  const max = Math.max(min, parseFloat(maxPrice) || Number.MAX_SAFE_INTEGER);
+  const page = Math.max(1, parseInt(pageIndex, 10) || 1);
+  const limit = Math.max(1, parseInt(pageSize, 10) || 1);
+  console.log(limit);
+
+  //mongodb filter
+  const filter = {};
+  if (search.trim()) {
+    filter.name = { $regex: search.trim(), $options: "i" };
+  }
+
+  if (category.trim()) {
+    const categories = category
+      .split(",")
+      .map((cat) => cat.trim())
+      .filter(Boolean);
+    if (categories.length > 0) {
+      filter.category = { $in: categories };
+    }
+  }
+
+  if (min || max) {
+    filter.price = { $gte: min, $lte: max };
+  }
+
+  //count total products
+  const total = await Product.countDocuments(filter);
+  const products = await Product.find(filter)
+    .skip((page - 1) * limit)
+    .limit(limit);
+  return res.status(200).json({ total, products });
 });
 
 // create the product /api/v1/admin/products
