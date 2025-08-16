@@ -110,3 +110,10 @@ export const resetPassword = catchAsync(async (req, res, next) => {
 
   sendToken(user, 200, res);
 });
+
+//user profile /api/v1/me
+export const getProfileInfo = catchAsync(async (req, res, next) => {
+  const user = await User.findById(req?.user?._id);
+
+  res.status(200).json({ user });
+});
