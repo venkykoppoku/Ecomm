@@ -117,3 +117,97 @@ export const getProfileInfo = catchAsync(async (req, res, next) => {
 
   res.status(200).json({ user });
 });
+
+//update password /api/v1/password/update
+export const updatePassword = catchAsync(async (req, res, next) => {
+  const user = await User.findById(req?.user?._id).select("+password");
+
+  const isPasswordsMatched = await user.comparePassword(req.body.oldPassword);
+
+  if (!isPasswordsMatched) {
+    return next(new ErrorHandler("Old password not matched", 400));
+  }
+
+  user.password = req.body.password;
+  user.save();
+
+  res.status(200).json({
+    success: true,
+  });
+});
+
+//update user profile /api/v1/me/update
+export const updateProfile = catchAsync(async (req, res, next) => {
+  const newUserData = {
+    email: req.body.email,
+    name: req.body.name,
+  };
+
+  const user = await User.findByIdAndUpdate(req?.user?._id, newUserData, {
+    new: true,
+  });
+
+  res.status(200).json({
+    user,
+  });
+});
+
+//get all users /api/v1/admin/users
+export const getAllUsers = catchAsync(async (req, res, next) => {
+  const users = await User.find();
+
+  res.status(200).json({
+    users,
+  });
+});
+
+//get user by id  /api/v1/admin/user/:id
+export const getUserById = catchAsync(async (req, res, next) => {
+  const user = await User.findById(req?.params?.id);
+
+  if (!user) {
+    return next(
+      new ErrorHandler(`user not found with id ${req?.params?.id}`, 404)
+    );
+  }
+
+  res.status(200).json({
+    user,
+  });
+});
+
+// Update User Details - ADMIN  =>  /api/v1/admin/users/:id
+export const updateUser = catchAsync(async (req, res, next) => {
+  const newUserData = {
+    name: req.body.name,
+    email: req.body.email,
+    role: req.body.role,
+  };
+
+  const user = await User.findByIdAndUpdate(req.params.id, newUserData, {
+    new: true,
+  });
+
+  res.status(200).json({
+    user,
+  });
+});
+
+// Delete User - ADMIN  =>  /api/v1/admin/users/:id
+export const deleteUser = catchAsync(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+
+  if (!user) {
+    return next(
+      new ErrorHandler(`User not found with id: ${req.params.id}`, 404)
+    );
+  }
+
+  // TODO - Remove user avatar from cloudinary
+
+  await user.deleteOne();
+
+  res.status(200).json({
+    success: true,
+  });
+});
