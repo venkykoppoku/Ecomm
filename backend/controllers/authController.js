@@ -1,6 +1,8 @@
 import catchAsync from "../middlewares/catchAsync.js";
 import User from "../models/user.js";
+import { getResetPasswordTemplate } from "../utils/emailTemplates.js";
 import ErrorHandler from "../utils/errorHandler.js";
+import sendEmail from "../utils/sendEmail.js";
 import sendToken from "../utils/sendToken.js";
 
 //register user /api/v1/register
@@ -37,4 +39,37 @@ export const logOutUser = catchAsync(async (req, res, next) => {
   res.status(200).json({
     message: "Logged out",
   });
+});
+
+//forgotPassword /api.v1/password/forgot
+export const forgotPassword = catchAsync(async (req, res, next) => {
+  const user = await User.findOne({ email: req.body.email });
+
+  if (!user) {
+    return next(new ErrorHandler("User not found with this email", 404));
+  }
+  const resetToken = user.getResetPasswordToken();
+  await user.save();
+
+  //create reset password url
+  const resetUrl = `${process.env.FRONT_END_URL}/api/v1/password/reset/${resetToken}`;
+
+  const message = getResetPasswordTemplate(user.email, resetUrl);
+
+  try {
+    await sendEmail({
+      to: user.email,
+      subject: "Ecomm password recovery",
+      message: message,
+    });
+
+    res.status(200).json({
+      message: `Email sent to: ${user.email}`,
+    });
+  } catch (error) {
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+    await user.save();
+    return next(new ErrorHandler(error?.message, 500));
+  }
 });
