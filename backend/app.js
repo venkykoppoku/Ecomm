@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import { connectDatabase } from "./config/dbConnect.js";
 import productRoutes from "./routes/product.js";
 import authRoutes from "./routes/auth.js";
+import orderRoutes from "./routes/order.js";
 import errorMiddleware from "./middlewares/error.js";
 
 //handle uncaught exceptions
@@ -26,6 +27,7 @@ app.use(cookieParser());
 //import all routes
 app.use("/api/v1", productRoutes);
 app.use("/api/v1", authRoutes);
+app.use("/api/v1", orderRoutes);
 
 //custom error handler middleware
 app.use(errorMiddleware);

@@ -15,10 +15,10 @@ router
   .post(isAuthenticated, authorizeRoles("admin"), createProduct);
 router.route("/products/:id").get(getProductById);
 router
-  .route("admin/products/:id")
+  .route("/admin/products/:id")
   .put(isAuthenticated, authorizeRoles("admin"), updateProductById);
 router
-  .route("admin/products/:id")
+  .route("/admin/products/:id")
   .delete(isAuthenticated, authorizeRoles("admin"), deleteProductById);
 
 export default router;
