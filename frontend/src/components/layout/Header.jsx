@@ -20,7 +20,7 @@ const Header = () => {
               className="form-control"
               placeholder="Enter Product Name ..."
               name="keyword"
-              value=""
+              onChange={() => {}}
             />
             <button id="search_btn" className="btn" type="submit">
               <i className="fa fa-search" aria-hidden="true"></i>
