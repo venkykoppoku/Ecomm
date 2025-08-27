@@ -17,7 +17,6 @@ export const getAllProducts = catchAsync(async (req, res) => {
   const max = Math.max(min, parseFloat(maxPrice) || Number.MAX_SAFE_INTEGER);
   const page = Math.max(1, parseInt(pageIndex, 10) || 1);
   const limit = Math.max(1, parseInt(pageSize, 10) || 1);
-  console.log(limit);
 
   //mongodb filter
   const filter = {};
