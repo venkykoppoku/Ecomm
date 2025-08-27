@@ -6,13 +6,16 @@ import Loader from "./layout/Loader";
 import toast from "react-hot-toast";
 import CustomPagination from "./layout/CustomPagination";
 import { useSearchParams } from "react-router-dom";
+import Filters from "./layout/Filters";
 
 const Home = () => {
   let [searchParams] = useSearchParams();
   const pageIndex = searchParams.get("pageIndex") || 1;
   const search = searchParams.get("search") || "";
+  const min = searchParams.get("min") || 0;
+  const max = searchParams.get("max") || 0;
 
-  const params = { pageIndex, search };
+  const params = { pageIndex, search, min, max };
   const { data, isLoading, error, isError } = useGetProductsQuery(params);
   const columnSize = search ? 4 : 3;
 
@@ -29,7 +32,11 @@ const Home = () => {
     <>
       <MetaData title={"But best products"} />
       <div className="row">
-        {search && <div className="col-6 col-md-3 mt-5">Filters</div>}
+        {search && (
+          <div className="col-6 col-md-3 mt-5">
+            <Filters />
+          </div>
+        )}
         <div className={search ? "col-6 col-md-9" : "col-6 col-md-12"}>
           <h1 id="products_heading" className="text-secondary">
             {search

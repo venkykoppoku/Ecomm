@@ -10,6 +10,8 @@ export const productAPI = createApi({
           pageIndex: params.pageIndex,
           pageSize: 4,
           search: params.search,
+          minPrice: params.min,
+          maxPrice: params.max,
         },
       }),
     }),
