@@ -55,6 +55,7 @@ const Filters = () => {
     return false;
   };
 
+  //restore values after reload the page
   useEffect(() => {
     const categoryParam = searchParams.get("category");
     if (categoryParam) {
