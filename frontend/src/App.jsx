@@ -4,12 +4,14 @@ import { HelmetProvider } from "@dr.pogodin/react-helmet";
 import Home from "./components/Home";
 import Footer from "./components/layout/Footer";
 import Header from "./components/layout/Header";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
     <HelmetProvider>
       <Router>
         <div className="app">
+          <Toaster />
           <Header />
           <div className="container">
             <Routes>

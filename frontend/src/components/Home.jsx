@@ -1,10 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import MetaData from "./layout/Metadata";
 import { useGetProductsQuery } from "../redux/api/productApi";
 import ProductItem from "./product/ProductItem";
+import Loader from "./layout/Loader";
+import toast from "react-hot-toast";
 
 const Home = () => {
-  const { data } = useGetProductsQuery();
+  const { data, isLoading, error, isError } = useGetProductsQuery();
+
+  useEffect(() => {
+    if (isError) {
+      toast.error(error?.data?.message);
+    }
+  }, [isError, error?.data?.message]);
+
+  if (isLoading) {
+    return <Loader />;
+  }
   return (
     <>
       <MetaData title={"But best products"} />
