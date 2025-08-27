@@ -12,10 +12,13 @@ const Home = () => {
   let [searchParams] = useSearchParams();
   const pageIndex = searchParams.get("pageIndex") || 1;
   const search = searchParams.get("search") || "";
-  const min = searchParams.get("min") || 0;
-  const max = searchParams.get("max") || 0;
+  const min = searchParams.get("min");
+  const max = searchParams.get("max");
 
-  const params = { pageIndex, search, min, max };
+  min !== null && (params.min = min);
+  max !== null && (params.max = max);
+
+  const params = { pageIndex, search };
   const { data, isLoading, error, isError } = useGetProductsQuery(params);
   const columnSize = search ? 4 : 3;
 

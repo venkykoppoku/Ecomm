@@ -5,8 +5,8 @@ import { getPriceQueryParams } from "../../helpers/helper";
 const Filters = () => {
   const navigate = useNavigate();
   let [searchParams] = useSearchParams();
-  const [min, setMin] = useState(0);
-  const [max, setMax] = useState(0);
+  const [min, setMin] = useState(null);
+  const [max, setMax] = useState(null);
 
   const handlePriceButtonClick = (event) => {
     event.preventDefault();
