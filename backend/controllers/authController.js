@@ -20,7 +20,9 @@ export const loginUser = catchAsync(async (req, res, next) => {
     return next(new ErrorHandler("Please enter email or password", 400));
   }
   const user = await User.findOne({ email }).select("+password");
-
+  if (!user) {
+    return next(new ErrorHandler(`User not found with  email ${email} `, 404));
+  }
   const comparePassword = await user.comparePassword(password);
 
   if (!comparePassword) {
