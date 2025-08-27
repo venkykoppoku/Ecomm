@@ -1,12 +1,45 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { getPriceQueryParams } from "../../helpers/helper";
+import { PRODUCT_CATEGORIES } from "../../constants/constants";
 
 const Filters = () => {
   const navigate = useNavigate();
   let [searchParams] = useSearchParams();
-  const [min, setMin] = useState(null);
-  const [max, setMax] = useState(null);
+  const [min, setMin] = useState(undefined);
+  const [max, setMax] = useState(undefined);
+
+  const [selectedCategories, setSelectedCategories] = useState([]);
+
+  const handleClick = (checkBox) => {
+    const isChecked = checkBox.checked;
+    const value = checkBox.value;
+    let updatedCategories;
+    if (isChecked) {
+      updatedCategories = [...selectedCategories, value];
+    } else {
+      updatedCategories = selectedCategories.filter(
+        (category) => category !== value
+      );
+    }
+
+    setSelectedCategories(updatedCategories);
+
+    // Build query string
+    const categories = updatedCategories.join(",");
+    if (searchParams.has("category") && categories) {
+      searchParams.set("category", categories);
+    } else {
+      if (categories) {
+        searchParams.append("category", categories);
+      } else {
+        searchParams.delete("category");
+      }
+    }
+
+    const path = window.location.pathname + "?" + searchParams?.toString();
+    navigate(path);
+  };
 
   const handlePriceButtonClick = (event) => {
     event.preventDefault();
@@ -15,6 +48,24 @@ const Filters = () => {
     const path = window.location.pathname + "?" + searchParams?.toString();
     navigate(path);
   };
+
+  const defaultCheckHandler = (checkboxType, checkboxValue) => {
+    const selectedCheckBoxes = searchParams?.get(checkboxType);
+    if (selectedCheckBoxes?.includes(checkboxValue)) return true;
+    return false;
+  };
+
+  useEffect(() => {
+    const categoryParam = searchParams.get("category");
+    if (categoryParam) {
+      setSelectedCategories(categoryParam.split(","));
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    searchParams.has(min) && setMin(searchParams.get("min"));
+    searchParams.has(max) && setMax(searchParams.get("max"));
+  }, [searchParams, min, max]);
 
   return (
     <div className="border p-3 filter">
@@ -52,34 +103,22 @@ const Filters = () => {
       </form>
       <hr />
       <h5 className="mb-3">Category</h5>
-
-      <div className="form-check">
-        <input
-          className="form-check-input"
-          type="checkbox"
-          name="category"
-          id="check4"
-          value="Category 1"
-        />
-        <label className="form-check-label" htmlFor="check4">
-          {" "}
-          Category 1{" "}
-        </label>
-      </div>
-      <div className="form-check">
-        <input
-          className="form-check-input"
-          type="checkbox"
-          name="category"
-          id="check5"
-          value="Category 2"
-        />
-        <label className="form-check-label" htmlFor="check5">
-          {" "}
-          Category 2{" "}
-        </label>
-      </div>
-
+      {PRODUCT_CATEGORIES.map((category, index) => (
+        <div className="form-check" key={index}>
+          <input
+            className="form-check-input"
+            type="checkbox"
+            name="category"
+            id="check4"
+            value={category}
+            defaultChecked={defaultCheckHandler("category", category)}
+            onClick={(e) => handleClick(e.target)}
+          />
+          <label className="form-check-label" htmlFor="check4">
+            {category}
+          </label>
+        </div>
+      ))}
       <hr />
       <h5 className="mb-3">Ratings</h5>
 

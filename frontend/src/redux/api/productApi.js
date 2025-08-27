@@ -12,6 +12,7 @@ export const productAPI = createApi({
           search: params.search,
           minPrice: params.min,
           maxPrice: params.max,
+          category: params.category,
         },
       }),
     }),

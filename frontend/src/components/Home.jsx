@@ -14,11 +14,14 @@ const Home = () => {
   const search = searchParams.get("search") || "";
   const min = searchParams.get("min");
   const max = searchParams.get("max");
+  const category = searchParams.get("category");
+
+  const params = { pageIndex, search };
 
   min !== null && (params.min = min);
   max !== null && (params.max = max);
+  category !== null && (params.category = category);
 
-  const params = { pageIndex, search };
   const { data, isLoading, error, isError } = useGetProductsQuery(params);
   const columnSize = search ? 4 : 3;
 
