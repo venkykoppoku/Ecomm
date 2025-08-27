@@ -10,9 +10,11 @@ import { useSearchParams } from "react-router-dom";
 const Home = () => {
   let [searchParams] = useSearchParams();
   const pageIndex = searchParams.get("pageIndex") || 1;
+  const search = searchParams.get("search") || "";
 
-  const params = { pageIndex };
+  const params = { pageIndex, search };
   const { data, isLoading, error, isError } = useGetProductsQuery(params);
+  const columnSize = search ? 4 : 3;
 
   useEffect(() => {
     if (isError) {
@@ -27,19 +29,28 @@ const Home = () => {
     <>
       <MetaData title={"But best products"} />
       <div className="row">
-        <div className="col-12 col-sm-6 col-md-12">
+        {search && <div className="col-6 col-md-3 mt-5">Filters</div>}
+        <div className={search ? "col-6 col-md-9" : "col-6 col-md-12"}>
           <h1 id="products_heading" className="text-secondary">
-            Latest Products
+            {search
+              ? `${data?.products?.length} products found with key: ${search}`
+              : `Latest Products`}
           </h1>
 
           <section id="products" className="mt-5">
             <div className="row">
               {data?.products?.map((product) => (
-                <ProductItem key={product._id} product={product} />
+                <ProductItem
+                  key={product._id}
+                  product={product}
+                  columnSize={columnSize}
+                />
               ))}
             </div>
           </section>
-          <CustomPagination resPerPage={4} totalItemsCount={data?.total} />
+          {data?.total > 4 && (
+            <CustomPagination resPerPage={4} totalItemsCount={data?.total} />
+          )}
         </div>
       </div>
     </>

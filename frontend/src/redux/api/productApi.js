@@ -8,6 +8,8 @@ export const productAPI = createApi({
         url: "/products",
         params: {
           pageIndex: params.pageIndex,
+          pageSize: 4,
+          search: params.search,
         },
       }),
     }),
