@@ -563,3 +563,31 @@ footer {
   border-radius: 0.3rem;
   color: #fa9c23;
 }
+
+.pagination {
+  display: flex;
+  gap: 6px;
+  list-style: none;
+  justify-content: center;
+  padding-top: 1rem;
+}
+
+.pagination li a {
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  color: #fa9c23;
+  cursor: pointer;
+  border-radius: 4px;
+  text-decoration: none;
+}
+
+.pagination li a:hover {
+  background: #b8af7e;
+  color: #000;
+}
+
+.active a {
+  background: #fa9c23;
+  color: #fff !important;
+  border-color: #fa9c23;
+}
