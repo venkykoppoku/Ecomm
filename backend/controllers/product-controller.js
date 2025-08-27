@@ -11,6 +11,7 @@ export const getAllProducts = catchAsync(async (req, res) => {
     maxPrice = Number.MAX_SAFE_INTEGER,
     pageSize = 4,
     pageIndex = 1,
+    rating = 0,
   } = req.query;
 
   const min = Math.max(0, parseFloat(minPrice) || 0);
@@ -36,6 +37,10 @@ export const getAllProducts = catchAsync(async (req, res) => {
 
   if (min || max) {
     filter.price = { $gte: min, $lte: max };
+  }
+
+  if (rating) {
+    filter.ratings = { $gte: ratings };
   }
 
   //count total products

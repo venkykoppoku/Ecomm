@@ -71,17 +71,16 @@ const ProductDetails = () => {
 
         <div className="ratings mt-auto d-flex">
           <Rating
-            value={product?.rating}
-            numberOfStars={5}
-            name="rating"
-            style={{ maxWidth: 100 }}
+            value={product?.ratings}
+            readOnly
+            style={{ maxWidth: 120 }} // star size
             itemStyles={{
               itemShapes: Star,
               activeFillColor: "#f5c518",
-              itemStrokeWidth: 2,
-              itemStrokeColor: "#f5c518",
-              itemSpacing: 4,
+              inactiveFillColor: "#ddd",
             }}
+            // ⭐ Spacing goes here
+            itemSpacing={4}
           />
           <span id="no-of-reviews" className="pt-1 ps-2">
             ({product?.numOfReviews})

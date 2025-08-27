@@ -18,17 +18,16 @@ const ProductItem = ({ product, columnSize }) => {
           </h5>
           <div className="ratings mt-auto d-flex">
             <Rating
-              value={product?.rating}
-              numberOfStars={5}
-              name="rating"
-              style={{ maxWidth: 140 }}
+              value={product?.ratings}
+              readOnly
+              style={{ maxWidth: 120 }} // star size
               itemStyles={{
                 itemShapes: Star,
                 activeFillColor: "#f5c518",
-                itemStrokeWidth: 2,
-                itemStrokeColor: "#f5c518",
-                itemSpacing: 4,
+                inactiveFillColor: "#ddd",
               }}
+              // ⭐ Spacing goes here
+              itemSpacing={4}
             />
             <span id="no_of_reviews" className="pt-2 ps-2">
               ({product?.numOfReviews})

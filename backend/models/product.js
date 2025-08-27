@@ -20,7 +20,7 @@ const productScheema = new mongoose.Schema(
       type: Number,
       required: [true, "Please enter product stock"],
     },
-    rating: {
+    ratings: {
       type: Number,
       default: 0,
     },

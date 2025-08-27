@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { getPriceQueryParams } from "../../helpers/helper";
 import { PRODUCT_CATEGORIES } from "../../constants/constants";
+import { Rating, Star } from "@smastrom/react-rating";
 
 const Filters = () => {
   const navigate = useNavigate();
@@ -11,7 +12,7 @@ const Filters = () => {
 
   const [selectedCategories, setSelectedCategories] = useState([]);
 
-  const handleClick = (checkBox) => {
+  const handleCategoryClick = (checkBox) => {
     const isChecked = checkBox.checked;
     const value = checkBox.value;
     let updatedCategories;
@@ -47,6 +48,31 @@ const Filters = () => {
     searchParams = getPriceQueryParams(searchParams, "max", max);
     const path = window.location.pathname + "?" + searchParams?.toString();
     navigate(path);
+  };
+
+  const handleRatingClick = (checkbox) => {
+    const checkboxes = document.getElementsByName(checkbox.name);
+
+    checkboxes.forEach((item) => {
+      if (item !== checkbox) item.checked = false;
+    });
+
+    if (checkbox.checked === false) {
+      if (searchParams.has(checkbox.name)) {
+        searchParams.delete(checkbox.name);
+        const path = window.location.pathname + "?" + searchParams.toString();
+        navigate(path);
+      }
+    } else {
+      if (searchParams.has(checkbox.name)) {
+        searchParams.set(checkbox.name, checkbox.value);
+      } else {
+        searchParams.append(checkbox.name, checkbox.value);
+      }
+
+      const path = window.location.pathname + "?" + searchParams.toString();
+      navigate(path);
+    }
   };
 
   const defaultCheckHandler = (checkboxType, checkboxValue) => {
@@ -113,7 +139,7 @@ const Filters = () => {
             id="check4"
             value={category}
             defaultChecked={defaultCheckHandler("category", category)}
-            onClick={(e) => handleClick(e.target)}
+            onClick={(e) => handleCategoryClick(e.target)}
           />
           <label className="form-check-label" htmlFor="check4">
             {category}
@@ -122,31 +148,35 @@ const Filters = () => {
       ))}
       <hr />
       <h5 className="mb-3">Ratings</h5>
-
-      <div className="form-check">
-        <input
-          className="form-check-input"
-          type="checkbox"
-          name="ratings"
-          id="check7"
-          value="5"
-        />
-        <label className="form-check-label" htmlFor="check7">
-          <span className="star-rating">★ ★ ★ ★ ★</span>
-        </label>
-      </div>
-      <div className="form-check">
-        <input
-          className="form-check-input"
-          type="checkbox"
-          name="ratings"
-          id="check8"
-          value="4"
-        />
-        <label className="form-check-label" htmlFor="check8">
-          <span className="star-rating">★ ★ ★ ★ ☆</span>
-        </label>
-      </div>
+      {[5, 4, 3, 2, 1].map((rating) => (
+        <div className="form-check">
+          <input
+            className="form-check-input"
+            type="checkbox"
+            name="ratings"
+            id="check7"
+            value={rating}
+            onClick={(e) => handleRatingClick(e.target)}
+          />
+          <label className="form-check-label" htmlFor="check7">
+            <span className="ratings mt-auto d-flex">
+              <Rating
+                value={rating}
+                numberOfStars={5}
+                name="rating"
+                style={{ maxWidth: 120 }}
+                itemStyles={{
+                  itemShapes: Star,
+                  activeFillColor: "#f5c518",
+                  itemStrokeWidth: 1,
+                  itemStrokeColor: "#f5c518",
+                  itemSpacing: 4,
+                }}
+              />
+            </span>
+          </label>
+        </div>
+      ))}
     </div>
   );
 };
