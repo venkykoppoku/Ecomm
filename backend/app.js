@@ -21,7 +21,7 @@ const port = process.env.PORT || 3000;
 //database connection
 connectDatabase();
 
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
 app.use(cookieParser());
 
 //import all routes

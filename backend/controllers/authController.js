@@ -1,6 +1,6 @@
 import catchAsync from "../middlewares/catchAsync.js";
 import User from "../models/user.js";
-import { uploadFile } from "../utils/cloudinary.js";
+import { deleteFile, uploadFile } from "../utils/cloudinary.js";
 import { getResetPasswordTemplate } from "../utils/emailTemplates.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import sendEmail from "../utils/sendEmail.js";
@@ -48,6 +48,11 @@ export const logOutUser = catchAsync(async (req, res, next) => {
 //upload avatar => /api/v1/me/uploade_avatar
 export const uploadAvatar = catchAsync(async (req, res, next) => {
   const avatarRes = await uploadFile(req.body.avatar, "/Home/e-comm/avatars");
+
+  //remove previous avatar
+  if (req?.user?.avatar?.url) {
+    await deleteFile(req?.user?.avatar?.public_id);
+  }
   const user = await User.findByIdAndUpdate(req?.user?._id, {
     avatar: avatarRes,
   });
