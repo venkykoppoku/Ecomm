@@ -73,7 +73,7 @@ export const forgotPassword = catchAsync(async (req, res, next) => {
   await user.save();
 
   //create reset password url
-  const resetUrl = `${process.env.FRONT_END_URL}/api/v1/password/reset/${resetToken}`;
+  const resetUrl = `${process.env.FRONT_END_URL}/password/reset/${resetToken}`;
 
   const message = getResetPasswordTemplate(user.email, resetUrl);
 
@@ -95,8 +95,9 @@ export const forgotPassword = catchAsync(async (req, res, next) => {
   }
 });
 
-//reset password /api/v1/password/reset/:token8
+// Reset password   =>  /api/v1/password/reset/:token
 export const resetPassword = catchAsync(async (req, res, next) => {
+  // Hash the URL Token
   const resetPasswordToken = crypto
     .createHash("sha256")
     .update(req.params.token)

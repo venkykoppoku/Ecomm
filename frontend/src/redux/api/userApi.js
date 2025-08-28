@@ -3,7 +3,7 @@ import { setIsAuthenticated, setLoading, setUser } from "../features/userSlice";
 
 export const userAPI = createApi({
   reducerPath: "userApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "/api/v1" }),
+  baseQuery: fetchBaseQuery({ baseUrl: "/api/v1", credentials: "include" }),
   tagTypes: ["User"],
   endpoints: (builder) => ({
     getMe: builder.query({
@@ -46,6 +46,22 @@ export const userAPI = createApi({
       }),
       invalidatesTags: ["User"],
     }),
+    forgotPassword: builder.mutation({
+      query: (body) => ({
+        url: "/password/forgot",
+        method: "POST",
+        body: body,
+      }),
+    }),
+    resetPassword: builder.mutation({
+      query({ token, body }) {
+        return {
+          url: `/password/reset/${token}`,
+          method: "PUT",
+          body,
+        };
+      },
+    }),
   }),
 });
 
@@ -54,4 +70,6 @@ export const {
   useUpdateProfileMutation,
   useUploadAvatarMutation,
   useUpdatePasswordMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
 } = userAPI;
