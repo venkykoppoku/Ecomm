@@ -12,7 +12,6 @@ const Login = () => {
   const [login, { error, isLoading }] = useLoginMutation();
 
   const { isAuthenticated } = useSelector((state) => state.auth);
-  console.log(`login - ${isAuthenticated}`);
   useEffect(() => {
     if (isAuthenticated) {
       navigate("/");

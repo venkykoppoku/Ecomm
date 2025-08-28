@@ -1,5 +1,6 @@
 import catchAsync from "../middlewares/catchAsync.js";
 import User from "../models/user.js";
+import { uploadFile } from "../utils/cloudinary.js";
 import { getResetPasswordTemplate } from "../utils/emailTemplates.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import sendEmail from "../utils/sendEmail.js";
@@ -41,6 +42,18 @@ export const logOutUser = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     message: "Logged out",
+  });
+});
+
+//upload avatar => /api/v1/me/uploade_avatar
+export const uploadAvatar = catchAsync(async (req, res, next) => {
+  const avatarRes = await uploadFile(req.body.avatar, "/Home/e-comm/avatars");
+  const user = await User.findByIdAndUpdate(req?.user?._id, {
+    avatar: avatarRes,
+  });
+
+  res.status(200).json({
+    user,
   });
 });
 
