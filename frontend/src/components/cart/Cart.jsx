@@ -1,10 +1,11 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { setCartItems, removeCartItems } from "../../redux/features/cartSlice";
 
 const Cart = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { cartItems } = useSelector((state) => state.cart);
 
@@ -41,6 +42,10 @@ const Cart = () => {
     dispatch(removeCartItems(id));
   };
 
+  const handleClick = (event) => {
+    event.preventDefault();
+    navigate("/shipping");
+  };
   return (
     <>
       {cartItems?.length === 0 ? (
@@ -137,7 +142,11 @@ const Cart = () => {
                   </span>
                 </p>
                 <hr />
-                <button id="checkout_btn" className="btn btn-primary w-100">
+                <button
+                  id="checkout_btn"
+                  className="btn btn-primary w-100"
+                  onClick={handleClick}
+                >
                   Check out
                 </button>
               </div>
