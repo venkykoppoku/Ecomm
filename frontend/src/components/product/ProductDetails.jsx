@@ -4,15 +4,47 @@ import { useParams } from "react-router-dom";
 import { Rating, Star } from "@smastrom/react-rating";
 import Loader from "../layout/Loader";
 import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { setCartItems } from "../../redux/features/cartSlice";
 
 const ProductDetails = () => {
   const params = useParams();
+  const dispatch = useDispatch();
   const { data, isLoading, error, isError } = useGetProductDetailsQuery(
     params?.id
   );
   const product = data?.product;
 
   const [activeImage, setActiveImage] = useState("");
+
+  const [quantity, setQuantity] = useState(0);
+
+  const increaseQty = () => {
+    const count = document.querySelector(".count");
+    if (count.valueAsNumber >= product.stock) return;
+    setQuantity(count.valueAsNumber + 1);
+  };
+  const decreaseQty = () => {
+    const count = document.querySelector(".count");
+    if (count.valueAsNumber < 1) {
+      return;
+    }
+    const qty = count.valueAsNumber - 1;
+
+    setQuantity(qty);
+  };
+
+  const handleSetCartItems = () => {
+    const item = {
+      id: product?._id,
+      name: product?.name,
+      imageUrl: product?.images[0]?.url,
+      price: product?.price,
+      stock:product?.stock,
+      quantity,
+    };
+    dispatch(setCartItems(item));
+  };
 
   useEffect(() => {
     setActiveImage(
@@ -45,7 +77,7 @@ const ProductDetails = () => {
         </div>
         <div className="row justify-content-start mt-5">
           {product?.images?.map((img) => (
-            <div className="col-2 ms-4 mt-2">
+            <div className="col-2 ms-4 mt-2" key={img.url}>
               <a role="button">
                 <img
                   className={`d-block border rounded p-3 cursor-pointer ${
@@ -90,20 +122,25 @@ const ProductDetails = () => {
 
         <p id="product_price">{product?.price}</p>
         <div className="stockCounter d-inline">
-          <span className="btn btn-danger minus">-</span>
+          <span className="btn btn-danger minus" onClick={decreaseQty}>
+            -
+          </span>
           <input
             type="number"
             className="form-control count d-inline"
-            value="1"
-            onChange={() => {}}
+            value={quantity}
+            readOnly
           />
-          <span className="btn btn-primary plus">+</span>
+          <span className="btn btn-primary plus" onClick={increaseQty}>
+            +
+          </span>
         </div>
         <button
           type="button"
           id="cart_btn"
           className="btn btn-primary d-inline ms-4"
-          disabled=""
+          disabled={product?.stock < 0}
+          onClick={handleSetCartItems}
         >
           Add to Cart
         </button>

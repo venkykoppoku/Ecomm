@@ -38,7 +38,6 @@ const ResetPassword = () => {
     }
 
     const data = { password, confirmPassword };
-    console.log(token);
     resetPassword({ token, body: data });
   };
 
